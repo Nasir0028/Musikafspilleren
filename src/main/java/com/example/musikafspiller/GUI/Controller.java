@@ -3,7 +3,7 @@ package com.example.musikafspiller.GUI;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class AfspillerApp {
+public class Controller {
     @FXML
     private Label welcomeText;
 
