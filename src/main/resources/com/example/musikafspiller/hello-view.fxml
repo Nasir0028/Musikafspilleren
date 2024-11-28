@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
@@ -34,7 +35,7 @@
                         <Insets bottom="5.0" top="10.0" />
                      </VBox.margin>
                   </Text>
-                  <TableView prefHeight="200.0" prefWidth="200.0">
+                  <TableView fx:id="playlist" prefHeight="200.0" prefWidth="200.0">
                     <columns>
                       <TableColumn prefWidth="75.0" text="Navn" />
                       <TableColumn prefWidth="75.0" text="Sange" />
@@ -66,7 +67,7 @@
                         <Insets bottom="5.0" top="10.0" />
                      </VBox.margin>
                   </Text>
-                  <ListView prefHeight="200.0" prefWidth="200.0" />
+                  <ListView fx:id="songsOnPlaylist" prefHeight="200.0" prefWidth="200.0" />
                   <HBox alignment="TOP_CENTER" prefHeight="62.0" prefWidth="165.0" spacing="5.0">
                      <padding>
                         <Insets left="10.0" right="10.0" top="10.0" />
@@ -101,7 +102,7 @@
                         <Insets bottom="5.0" top="10.0" />
                      </VBox.margin>
                   </Text>
-                  <TableView prefHeight="229.0" prefWidth="297.0">
+                  <TableView fx:id="songs" prefHeight="229.0" prefWidth="297.0">
                     <columns>
                       <TableColumn prefWidth="75.0" text="Titel" />
                       <TableColumn prefWidth="75.0" text="Kunstner" />
@@ -130,7 +131,7 @@
    <top>
       <HBox alignment="TOP_RIGHT" prefHeight="43.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <TextField promptText="Søg">
+            <TextField fx:id="searchBar" promptText="Søg">
                <HBox.margin>
                   <Insets right="5.0" top="10.0" />
                </HBox.margin>
@@ -148,7 +149,7 @@
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0">
                <children>
-                  <ImageView fitHeight="105.0" fitWidth="105.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="albumCover" fitHeight="105.0" fitWidth="105.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../../../../../../../../Downloads/f03f009320983fbdbf059cbc17b4cc043fbd2a326ec9803d7255676c2d8ef98e.jpg" />
                      </image>
@@ -175,6 +176,49 @@
                   <Insets bottom="15.0" left="10.0" />
                </HBox.margin>
             </VBox>
+            <VBox prefHeight="55.0" prefWidth="376.0">
+               <children>
+                  <HBox prefHeight="27.0" prefWidth="371.0" />
+                  <HBox alignment="CENTER" prefHeight="33.0" prefWidth="376.0" spacing="10.0">
+                     <children>
+                        <Button fx:id="repeatPlaylist" mnemonicParsing="false" />
+                        <Button fx:id="backwards" mnemonicParsing="false" />
+                        <Button fx:id="playBtn" mnemonicParsing="false" />
+                        <Button fx:id="forward" mnemonicParsing="false" />
+                        <Button fx:id="shuffle" mnemonicParsing="false" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="19.0" prefWidth="376.0">
+                     <children>
+                        <Text fx:id="songTimer" strokeType="OUTSIDE" strokeWidth="0.0" text="TID">
+                           <HBox.margin>
+                              <Insets right="10.0" />
+                           </HBox.margin>
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="19.0" prefWidth="376.0">
+                     <children>
+                        <Slider fx:id="musicPlayer" prefHeight="14.0" prefWidth="364.0" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="111.0" prefWidth="185.0" spacing="5.0">
+               <children>
+                  <Button fx:id="muteBtn" mnemonicParsing="false" />
+                  <Slider fx:id="soundDrag" />
+               </children>
+               <padding>
+                  <Insets left="5.0" />
+               </padding>
+               <HBox.margin>
+                  <Insets bottom="10.0" right="5.0" />
+               </HBox.margin>
+            </HBox>
          </children>
       </HBox>
    </bottom>
