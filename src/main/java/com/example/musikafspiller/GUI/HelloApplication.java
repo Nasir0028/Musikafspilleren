@@ -1,4 +1,4 @@
-package com.example.musikafspiller;
+package com.example.musikafspiller.GUI;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

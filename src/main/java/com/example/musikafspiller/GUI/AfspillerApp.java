@@ -1,9 +1,9 @@
-package com.example.musikafspiller;
+package com.example.musikafspiller.GUI;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class AfspillerApp {
     @FXML
     private Label welcomeText;
 
