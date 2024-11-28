@@ -3,7 +3,7 @@ package com.example.musikafspiller.GUI;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
-public class PleaseProvideControllerClassName {
+public class Controller {
 
     @FXML
     private Button btnDown;
