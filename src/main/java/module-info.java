@@ -4,7 +4,6 @@ module com.example.musikafspiller {
 
 
     opens com.example.musikafspiller to javafx.fxml;
-    exports com.example.musikafspiller;
     exports com.example.musikafspiller.GUI;
     opens com.example.musikafspiller.GUI to javafx.fxml;
 }
