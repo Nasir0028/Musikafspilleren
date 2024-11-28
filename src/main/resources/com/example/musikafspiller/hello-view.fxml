@@ -41,9 +41,9 @@
                   </TableView>
                   <HBox alignment="TOP_CENTER" prefHeight="47.0" prefWidth="227.0" spacing="10.0">
                      <children>
-                        <Button mnemonicParsing="false" text="Opret Ny" />
-                        <Button mnemonicParsing="false" text="Rediger" />
-                        <Button mnemonicParsing="false" text="Slet" />
+                        <Button fx:id="newPlay" mnemonicParsing="false" text="Opret Ny" />
+                        <Button fx:id="editPlay" mnemonicParsing="false" text="Rediger" />
+                        <Button fx:id="deletePlay" mnemonicParsing="false" text="Slet" />
                      </children>
                      <padding>
                         <Insets left="10.0" right="10.0" top="10.0" />
@@ -72,7 +72,7 @@
                      <children>
                         <Button id="btn up" fx:id="btnUp" mnemonicParsing="false" />
                         <Button id="btn down" fx:id="btnDown" mnemonicParsing="false" />
-                        <Button mnemonicParsing="false" text="Fjern Sang" />
+                        <Button fx:id="removeSong" mnemonicParsing="false" text="Fjern Sang" />
                      </children>
                   </HBox>
                </children>
@@ -80,6 +80,7 @@
                   <Insets left="10.0" right="10.0" top="10.0" />
                </padding>
             </VBox>
+            <VBox prefHeight="357.0" prefWidth="164.0" />
          </children>
       </HBox>
    </center>
