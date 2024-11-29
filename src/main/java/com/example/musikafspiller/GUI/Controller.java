@@ -1,5 +1,7 @@
 package com.example.musikafspiller.GUI;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -97,10 +99,16 @@ public class Controller {
     private Text songTimer;
 
     @FXML
-    private TableView<?> songs;
+    private TableView<Sange> songs;
+    private ObservableList<Sange> sange;
+    public void initialize() {
+        sange = FXCollections.observableArrayList();
+        songs.setItems(sange);
+    }
 
     @FXML
     private ListView<?> songsOnPlaylist;
+    private ObservableList<?>
 
     @FXML
     private Slider soundDrag;
