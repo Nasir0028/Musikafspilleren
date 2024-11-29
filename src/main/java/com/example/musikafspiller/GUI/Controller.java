@@ -19,10 +19,6 @@ import java.util.List;
 public class Controller {
 
     @FXML
-    private Button addSong;
-    Button addSongbutton = new Button("Add Song");
-
-    @FXML
     private ImageView albumCover;
 
     @FXML
@@ -113,10 +109,9 @@ public class Controller {
 
     @FXML
     private ListView<?> songsOnPlaylist;
-    private ObservableList<?>
 
-    @FXML
-    private Slider soundDrag;
+    //@FXML
+    //private Slider soundDrag;
 
  public void handleAddSong() {
      FileChooser fileChooser = new FileChooser();
