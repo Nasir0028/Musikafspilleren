@@ -8,6 +8,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+import java.io.File;
+import java.util.List;
 
 public class Controller {
 
@@ -104,4 +109,20 @@ public class Controller {
 
     @FXML
     private Slider soundDrag;
+
+ public void handleAddSong() {
+     FileChooser fileChooser = new FileChooser();
+     fileChooser.setTitle("Select Song");
+
+     fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Audio Files", "*.mp3", "*.wav"));
+
+     List<File> selectedFiles = fileChooser.showOpenMultipleDialog(new Stage());
+     if (selectedFiles != null) {
+         for (File file : selectedFiles) {
+
+         }
+     }
+ }
 }
+
+
