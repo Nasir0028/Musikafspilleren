@@ -68,14 +68,31 @@
                      </VBox.margin>
                   </Text>
                   <ListView fx:id="songsOnPlaylist" prefHeight="200.0" prefWidth="200.0" />
-                  <HBox alignment="TOP_CENTER" prefHeight="62.0" prefWidth="165.0" spacing="5.0">
+                  <HBox alignment="TOP_CENTER" prefHeight="62.0" prefWidth="165.0">
                      <padding>
                         <Insets left="10.0" right="10.0" top="10.0" />
                      </padding>
                      <children>
-                        <Button id="btn up" fx:id="btnUp" mnemonicParsing="false" />
-                        <Button id="btn down" fx:id="btnDown" mnemonicParsing="false" />
-                        <Button fx:id="removeSong" mnemonicParsing="false" text="Fjern Sang" />
+                        <Button id="btn up" fx:id="btnUp" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../../../../../../Skrivebord/Stine%20Ting/Illustrator/Musikafspiller%20Widgets/Pil-Op.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
+                        <Button id="btn down" fx:id="btnDown" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../../../../../../Skrivebord/Stine%20Ting/Illustrator/Musikafspiller%20Widgets/Pil-Ned.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
+                        <Button fx:id="removeSong" mnemonicParsing="false" text="Fjern">
+                           <HBox.margin>
+                              <Insets left="7.0" />
+                           </HBox.margin></Button>
                      </children>
                   </HBox>
                </children>
@@ -85,16 +102,23 @@
             </VBox>
             <VBox alignment="TOP_CENTER" prefHeight="311.0" prefWidth="26.0">
                <children>
-                  <Button fx:id="songOnPlay" alignment="TOP_LEFT" mnemonicParsing="false">
+                  <Button fx:id="songOnPlay" alignment="TOP_LEFT" mnemonicParsing="false" style="-fx-background-color: transparent;">
                      <VBox.margin>
                         <Insets top="41.0" />
                      </VBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../../../../../Skrivebord/Stine%20Ting/Illustrator/Musikafspiller%20Widgets/Pil-Note.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
                   </Button>
                </children>
             </VBox>
             <VBox alignment="TOP_CENTER" prefHeight="357.0" prefWidth="321.0">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SANGE">
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="SANG BIBLIOTEK">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
@@ -179,12 +203,26 @@
             <VBox prefHeight="55.0" prefWidth="376.0">
                <children>
                   <HBox prefHeight="27.0" prefWidth="371.0" />
-                  <HBox alignment="CENTER" prefHeight="33.0" prefWidth="376.0" spacing="10.0">
+                  <HBox alignment="CENTER" prefHeight="33.0" prefWidth="376.0">
                      <children>
                         <Button fx:id="repeatPlaylist" mnemonicParsing="false" />
                         <Button fx:id="backwards" mnemonicParsing="false" />
-                        <Button fx:id="playBtn" mnemonicParsing="false" />
-                        <Button fx:id="forward" mnemonicParsing="false" />
+                        <Button fx:id="playBtn" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../../../../../../Skrivebord/Stine%20Ting/Illustrator/Musikafspiller%20Widgets/Pil-Play.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
+                        <Button fx:id="forward" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <ImageView fitHeight="23.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../../../../../../Skrivebord/Stine%20Ting/Illustrator/Musikafspiller%20Widgets/Forward.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
                         <Button fx:id="shuffle" mnemonicParsing="false" />
                      </children>
                   </HBox>
