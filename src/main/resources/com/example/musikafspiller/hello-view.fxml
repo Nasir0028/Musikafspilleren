@@ -206,7 +206,14 @@
                   <HBox alignment="CENTER" prefHeight="33.0" prefWidth="376.0">
                      <children>
                         <Button fx:id="repeatPlaylist" mnemonicParsing="false" />
-                        <Button fx:id="backwards" mnemonicParsing="false" />
+                        <Button fx:id="backwards" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <ImageView fitHeight="23.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../../../../../../Skrivebord/Stine%20Ting/Illustrator/Musikafspiller%20Widgets/Backwards.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
                         <Button fx:id="playBtn" mnemonicParsing="false" style="-fx-background-color: transparent;">
                            <graphic>
                               <ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
@@ -247,8 +254,18 @@
             </VBox>
             <HBox alignment="BOTTOM_RIGHT" prefHeight="111.0" prefWidth="185.0" spacing="5.0">
                <children>
-                  <Button fx:id="muteBtn" mnemonicParsing="false" />
-                  <Slider fx:id="soundDrag" />
+                  <Button fx:id="muteBtn" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../../../../../Skrivebord/Stine%20Ting/Illustrator/Musikafspiller%20Widgets/Lyd.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                  <Slider fx:id="soundDrag">
+                     <HBox.margin>
+                        <Insets bottom="6.0" />
+                     </HBox.margin></Slider>
                </children>
                <padding>
                   <Insets left="5.0" />
