@@ -106,8 +106,9 @@
                      </VBox.margin>
                      <graphic>
                         <ImageView fitHeight="16.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
-
-                        </ImageView>
+                           <image>
+                              <Image url="@../images/Pil-Note.png" />
+                           </image></ImageView>
                      </graphic>
                   </Button>
                </children>
@@ -200,18 +201,27 @@
                   <HBox alignment="CENTER" prefHeight="33.0" prefWidth="376.0">
                      <children>
                         <Button fx:id="repeatPlaylist" mnemonicParsing="false" />
-                        <Button fx:id="backwards" mnemonicParsing="false" />
+                        <Button fx:id="backwards" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <ImageView fitHeight="23.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Backwards.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
                         <Button fx:id="playBtn" mnemonicParsing="false" style="-fx-background-color: transparent;">
                            <graphic>
                               <ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-
-                              </ImageView>
+                                 <image>
+                                    <Image url="@../images/Pil-Play.png" />
+                                 </image></ImageView>
                            </graphic></Button>
                         <Button fx:id="forward" mnemonicParsing="false" style="-fx-background-color: transparent;">
                            <graphic>
                               <ImageView fitHeight="23.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-
-                              </ImageView>
+                                 <image>
+                                    <Image url="@../images/Forward.png" />
+                                 </image></ImageView>
                            </graphic></Button>
                         <Button fx:id="shuffle" mnemonicParsing="false" />
                      </children>
@@ -237,8 +247,18 @@
             </VBox>
             <HBox alignment="BOTTOM_RIGHT" prefHeight="111.0" prefWidth="185.0" spacing="5.0">
                <children>
-                  <Button fx:id="muteBtn" mnemonicParsing="false" />
-                  <Slider fx:id="soundDrag" />
+                  <Button fx:id="muteBtn" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="73.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/Lyd.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                  <Slider fx:id="soundDrag">
+                     <HBox.margin>
+                        <Insets bottom="8.0" />
+                     </HBox.margin></Slider>
                </children>
                <padding>
                   <Insets left="5.0" />
