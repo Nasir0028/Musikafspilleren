@@ -19,10 +19,6 @@ import java.util.List;
 public class Controller {
 
     @FXML
-    private Button addSong;
-    Button addSongbutton = new Button("Add Song");
-
-    @FXML
     private ImageView albumCover;
 
     @FXML

@@ -133,7 +133,7 @@
                   </TableView>
                   <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                      <children>
-                        <Button fx:id="addSong" mnemonicParsing="false" text="Tilføj" />
+                        <Button mnemonicParsing="false" onAction="#handleAddSong" text="Tilføj" />
                         <Button fx:id="editSong" mnemonicParsing="false" text="Rediger" />
                         <Button fx:id="deleteSong" mnemonicParsing="false" text="Slet" />
                      </children>
