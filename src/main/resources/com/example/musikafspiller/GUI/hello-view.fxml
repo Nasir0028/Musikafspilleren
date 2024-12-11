@@ -154,13 +154,20 @@
          <children>
             <TextField fx:id="searchBar" promptText="Søg">
                <HBox.margin>
-                  <Insets right="5.0" top="10.0" />
+                  <Insets top="10.0" />
                </HBox.margin>
             </TextField>
-            <Button fx:id="searchBtn" mnemonicParsing="false">
+            <Button fx:id="searchBtn" mnemonicParsing="false" style="-fx-background-color: transparent;">
                <HBox.margin>
                   <Insets right="5.0" top="10.0" />
                </HBox.margin>
+               <graphic>
+                  <ImageView fitHeight="21.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Search.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </Button>
          </children>
       </HBox>
