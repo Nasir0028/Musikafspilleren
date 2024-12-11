@@ -36,7 +36,7 @@ public class Controller {
     Button btnUpbutton = new Button("Up");
 
     @FXML
-    private Button deletePlay;
+    private Button deletePlaylist;
     Button deletePlaybutton = new Button("Delete Play");
 
     @FXML
@@ -44,7 +44,7 @@ public class Controller {
     Button deleteButton = new Button("Delete...");
 
     @FXML
-    private Button editPlay;
+    private Button editPlaylist;
     Button editPlaybutton = new Button("Edit Play");
 
     @FXML
@@ -61,7 +61,7 @@ public class Controller {
     private Button muteBtn;
 
     @FXML
-    private Button newPlay;
+    private Button newPlaylist;
     Button newButton = new Button("New...");
 
     @FXML
