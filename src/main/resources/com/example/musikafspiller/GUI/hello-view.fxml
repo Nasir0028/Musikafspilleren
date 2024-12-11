@@ -123,7 +123,7 @@
                         <Insets bottom="5.0" top="10.0" />
                      </VBox.margin>
                   </Text>
-                  <TableView fx:id="songs" prefHeight="229.0" prefWidth="285.0">
+                  <TableView fx:id="songsTable" prefHeight="229.0" prefWidth="285.0">
                     <columns>
                       <TableColumn prefWidth="75.0" text="Titel" />
                       <TableColumn prefWidth="75.0" text="Kunstner" />
@@ -185,7 +185,7 @@
                         <Font name="System Bold" size="14.0" />
                      </font>
                   </Text>
-                  <Text fx:id="artistPlay" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                  <Text fx:id="artistName" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
                      <font>
                         <Font name="System Bold" size="14.0" />
                      </font>

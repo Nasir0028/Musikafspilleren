@@ -22,8 +22,7 @@ public class Controller {
     private ImageView albumCover;
 
     @FXML
-    private Text artistPlay;
-    Button artistPlaybutton = new Button("Artist Play");
+    private Text artistName;
 
     @FXML
     private Button backwards;
@@ -100,32 +99,33 @@ public class Controller {
     private Text songTimer;
 
     @FXML
-    private TableView<Sange> songs;
+    private TableView<Sange> songsTable;
     private ObservableList<Sange> sange;
     public void initialize() {
         sange = FXCollections.observableArrayList();
-        songs.setItems(sange);
+        songsTable.setItems(sange);
     }
 
-    @FXML
-    private ListView<?> songsOnPlaylist;
+     public void handleAddSong() {
+         FileChooser fileChooser = new FileChooser();
+         fileChooser.setTitle("Select Song");
 
-    //@FXML
-    //private Slider soundDrag;
+         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Audio Files", "*.mp3", "*.wav"));
 
- public void handleAddSong() {
-     FileChooser fileChooser = new FileChooser();
-     fileChooser.setTitle("Select Song");
+         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(new Stage());
+         if (selectedFiles != null) {
+             for (File file : selectedFiles) {
 
-     fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Audio Files", "*.mp3", "*.wav"));
-
-     List<File> selectedFiles = fileChooser.showOpenMultipleDialog(new Stage());
-     if (selectedFiles != null) {
-         for (File file : selectedFiles) {
-
+             }
          }
+
      }
- }
+
+     @FXML
+     private ListView<?> songsOnPlaylist;
+
+     //@FXML
+     //private Slider soundDrag;
 }
 
 
