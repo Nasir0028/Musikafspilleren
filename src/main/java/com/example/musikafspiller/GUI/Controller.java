@@ -1,5 +1,6 @@
 package com.example.musikafspiller.GUI;
 
+import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
@@ -19,6 +20,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 
 public class Controller {
+
+    private MediaPlayer player;
 
     @FXML
     private ImageView albumCover;
@@ -67,8 +70,22 @@ public class Controller {
     private Button newPlay;
     Button newButton = new Button("New...");
 
-    @FXML
-    private Button playBtn;
+    public void play() {
+        currentMediaPlayer.play();
+    }
+
+    public void pause() {
+        currentMediaPlayer.pause();
+    }
+
+    public void handlePlayPause() {
+        play();
+        pause();
+
+        if (currentMediaPlayer == null) {
+            
+        }
+    }
 
     @FXML
     private TableView<?> playlist;
@@ -113,7 +130,7 @@ public class Controller {
     public void initialize() {
         // Initialize song list
         sange = FXCollections.observableArrayList();
-        songs.setItems(sange);
+        //songs.setItems(sange);
 
         // Initialize volume slider
         if (soundDrag != null) {

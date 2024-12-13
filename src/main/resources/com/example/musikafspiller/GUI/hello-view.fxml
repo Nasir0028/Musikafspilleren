@@ -125,10 +125,10 @@
                   </Text>
                   <TableView fx:id="songsTable" prefHeight="229.0" prefWidth="285.0">
                     <columns>
-                      <TableColumn prefWidth="75.0" text="Titel" />
-                      <TableColumn prefWidth="75.0" text="Kunstner" />
-                        <TableColumn prefWidth="75.0" text="Genre" />
-                        <TableColumn prefWidth="75.0" text="Tid" />
+                      <TableColumn fx:id="titleColumn" prefWidth="75.0" text="Titel" />
+                      <TableColumn fx:id="artistColumn" prefWidth="75.0" text="Kunstner" />
+                        <TableColumn fx:id="genreColumn" prefWidth="75.0" text="Genre" />
+                        <TableColumn fx:id="timeColumn" prefWidth="75.0" text="Tid" />
                     </columns>
                   </TableView>
                   <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
@@ -216,9 +216,17 @@
                                  </image>
                               </ImageView>
                            </graphic></Button>
-                        <Button fx:id="playBtn" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                        <Button fx:id="playBtn" mnemonicParsing="false" onAction="#handlePlayPause" style="-fx-background-color: transparent;">
                            <graphic>
                               <ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Pil-Play.png" />
+                                 </image></ImageView>
+                              <ImageView fx:id="pausePicture" fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Pause.png" />
+                                 </image></ImageView>
+                              <ImageView fx:id="playPicture" fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../images/Pil-Play.png" />
                                  </image></ImageView>
