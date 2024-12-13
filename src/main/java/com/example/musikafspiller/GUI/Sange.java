@@ -3,29 +3,29 @@ package com.example.musikafspiller.GUI;
 import java.io.Serializable;
 
 public class Sange implements Serializable {
-    private String kunstner;
-    private String titel;
+    private String artist;
+    private String title;
     private String genre;
-    int varighed;
+    int time;
 
 
-    Sange(String kunstner, int varighed, String titel, String genre) {
-        this.kunstner = kunstner;
-        this.varighed = varighed;
-        this.titel = titel;
+    Sange(String artist, int time, String title, String genre) {
+        this.artist = artist;
+        this.time = time;
+        this.title = title;
         this.genre = genre;
     }
 
-    public String getKunstner() {
-        return kunstner;
+    public String getArtist() {
+        return artist;
     }
 
-    public int getVarighed() {
-        return varighed;
+    public int getTime() {
+        return time;
     }
 
-    public String getTitel() {
-        return titel;
+    public String getTitle() {
+        return title;
     }
 
     public String getGenre() {
@@ -33,6 +33,6 @@ public class Sange implements Serializable {
     }
 
     public String toString() {
-        return kunstner + ", " + varighed + " " + titel + " " + genre;
+        return artist + ", " + time + " " + title + " " + genre;
     }
 }
