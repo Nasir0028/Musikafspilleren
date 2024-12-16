@@ -15,6 +15,8 @@ import java.util.List;
 
 public class Controller {
 
+    
+
     @FXML
     private TableView<Sange> songsTable;
 
@@ -48,14 +50,14 @@ public class Controller {
     public void play(){
         currentMediaPlayer.play();
     }
-public void pause(){
+    public void pause(){
         currentMediaPlayer.pause();
 }
 
-public void handlePlayPause(){
+    public void handlePlayPause(){
         play();
         pause();
-}
+    }
 
     @FXML
     public void handleAddSong() {
