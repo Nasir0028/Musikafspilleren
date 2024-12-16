@@ -11,13 +11,20 @@ public class Playlist implements Serializable {
     private String navn;
     private List<Sange> sangliste = new ArrayList<Sange>();
 
-    public Playlist(int id, String navn) {
-        this.id = id;
+    public Playlist(String navn) {
         this.navn = navn;
+    }
+
+    public List<Sange> getSangliste() {
+        return sangliste;
     }
 
     public void tilknytSange(Sange sang) {
         sangliste.add(sang);
+    }
+
+    public String getNavn() {
+        return navn;
     }
 
     @Override

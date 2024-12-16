@@ -1,21 +1,73 @@
 package com.example.musikafspiller.GUI;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.File;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
 
-    
+    private ObservableList<Playlist> playList;
+    @FXML
+    private TableView<Playlist> tablePlaylist = new TableView<>(playList);
+
+    @FXML
+    private TableColumn<Playlist, String> navnColumn;
+
+    @FXML
+    private TextField playlistInput;
+
+    @FXML
+    private TableView<Sange> sangePåPlaylist;
+
+    @FXML
+    void tilføjPlaylist(ActionEvent event) {
+        playList.add(new Playlist(playlistInput.getText()));
+    }
+
+    //!!!!!!!!! Erik skal hjælpe !!!!!!!!!!!!
+    @FXML
+    void tilføjSangPlaylist(ActionEvent event) {
+        tablePlaylist.getSelectionModel().selectedItemProperty().addListener((obs, oldPlaylist, newPlaylist) -> {
+            if (newPlaylist != null) {
+                sangeData.setAll(newPlaylist.getSangliste());
+            }
+            else {
+                sangeData.clear();
+            }
+        });
+
+        Playlist p = tablePlaylist.getSelectionModel().getSelectedItem();
+        if (p != null) {
+            Sange s = new Sange(sangNavnColumn.getText(), kunstnerColumn.getText());
+            p.tilknytSange(s);
+            sangeData.add(s);
+        }
+
+        sangNavnColumn.clear();
+        kunstnerColumn.clear();
+
+
+        
+        /*Sange s = songsTable.getSelectionModel().getSelectedItem();
+        Playlist p = tablePlaylist.getSelectionModel().getSelectedItem();
+        }*/
+    }
+
+
 
     @FXML
     private TableView<Sange> songsTable;
@@ -27,20 +79,37 @@ public class Controller {
     private TableColumn<Sange, String> artistColumn;
 
     @FXML
-    private TableColumn<Sange, String> genreColumn;
+    private TableColumn<Sange, String> timeColumn;
 
     @FXML
-    private TableColumn<Sange, Integer> timeColumn;
+    private TableColumn<Sange, String> sangNavnColumn;
+
+    @FXML
+    private TableColumn<Sange, String> kunstnerColumn;
 
     private ObservableList<Sange> songsList; // Backing data for the TableView
-    private MediaPlayer currentMediaPlayer; // Media player for audio playback
+    private MediaPlayer currentMediaPlayer = null; // Media player for audio playback
+
+    private ObservableList<Sange> sangeData;
 
     public void initialize() {
-        // Initialize columns
-        titleColumn.setCellValueFactory(new PropertyValueFactory<>("titel"));
-        artistColumn.setCellValueFactory(new PropertyValueFactory<>("kunstner"));
-        genreColumn.setCellValueFactory(new PropertyValueFactory<>("genre"));
-        timeColumn.setCellValueFactory(new PropertyValueFactory<>("varighed"));
+        // Initialize sange columns
+        titleColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getTitle())));
+        artistColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getArtist())));
+        timeColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getTime())));
+
+        // playlist column
+        navnColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getNavn())));
+
+        playList = FXCollections.observableArrayList();
+        tablePlaylist.setItems(playList);
+
+        sangNavnColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getTitle())));
+        kunstnerColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getArtist())));
+
+        sangeData = FXCollections.observableArrayList();
+        sangePåPlaylist.setItems(sangeData);
+
 
         // Initialize ObservableList and bind it to the TableView
         songsList = FXCollections.observableArrayList();
@@ -50,9 +119,10 @@ public class Controller {
     public void play(){
         currentMediaPlayer.play();
     }
+
     public void pause(){
         currentMediaPlayer.pause();
-}
+    }
 
     public void handlePlayPause(){
         play();

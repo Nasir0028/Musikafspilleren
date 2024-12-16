@@ -1,11 +1,14 @@
 package com.example.musikafspiller.GUI;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Sange implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String artist;
     private String title;
-    private String genre;
     int time;
 
 
@@ -13,7 +16,6 @@ public class Sange implements Serializable {
         this.artist = artist;
         this.time = time;
         this.title = title;
-        this.genre = genre;
     }
 
     public String getArtist() {
@@ -28,11 +30,7 @@ public class Sange implements Serializable {
         return title;
     }
 
-    public String getGenre() {
-        return genre;
-    }
-
     public String toString() {
-        return artist + ", " + time + " " + title + " " + genre;
+        return artist + ", " + time + " " + title;
     }
 }

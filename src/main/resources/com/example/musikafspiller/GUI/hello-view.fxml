@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -35,15 +34,14 @@
                         <Insets bottom="5.0" top="10.0" />
                      </VBox.margin>
                   </Text>
-                  <TableView fx:id="playlist" prefHeight="200.0" prefWidth="200.0">
+                  <TableView fx:id="tablePlaylist" prefHeight="200.0" prefWidth="200.0">
                      <columns>
-                        <TableColumn prefWidth="51.33334255218506" text="ID" />
-                        <TableColumn prefWidth="173.9999656677246" text="Playlist Navn" />
+                        <TableColumn fx:id="navnColumn" prefWidth="226.00000031789145" text="Playlist Navn" />
                      </columns>
                   </TableView>
                   <HBox prefHeight="26.0" prefWidth="227.0">
                      <children>
-                        <TextField prefHeight="25.0" prefWidth="227.0" promptText="Indsæt navn">
+                        <TextField fx:id="playlistInput" prefHeight="25.0" prefWidth="227.0" promptText="Indsæt navn">
                            <HBox.margin>
                               <Insets top="5.0" />
                            </HBox.margin>
@@ -52,7 +50,7 @@
                   </HBox>
                   <HBox alignment="TOP_CENTER" prefHeight="47.0" prefWidth="227.0" spacing="10.0">
                      <children>
-                        <Button fx:id="newPlaylist" mnemonicParsing="false" text="Opret Ny" />
+                        <Button mnemonicParsing="false" onAction="#tilføjPlaylist" text="Opret Ny" />
                         <Button fx:id="deletePlaylist" mnemonicParsing="false" text="Slet" />
                      </children>
                      <padding>
@@ -74,7 +72,12 @@
                         <Insets bottom="5.0" top="10.0" />
                      </VBox.margin>
                   </Text>
-                  <ListView fx:id="songsOnPlaylist" prefHeight="200.0" prefWidth="200.0" />
+                  <TableView fx:id="sangePåPlaylist" prefHeight="219.0" prefWidth="205.0">
+                     <columns>
+                        <TableColumn fx:id="sangNavnColumn" prefWidth="80.0000581741333" text="Titel" />
+                        <TableColumn fx:id="kunstnerColumn" prefWidth="83.99994659423828" text="Kunstner" />
+                     </columns>
+                  </TableView>
                   <HBox alignment="TOP_CENTER" prefHeight="62.0" prefWidth="165.0">
                      <padding>
                         <Insets left="10.0" right="10.0" top="10.0" />
@@ -107,7 +110,7 @@
             </VBox>
             <VBox alignment="TOP_CENTER" prefHeight="311.0" prefWidth="26.0">
                <children>
-                  <Button fx:id="songOnPlay" alignment="TOP_LEFT" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                  <Button fx:id="songOnPlay" alignment="TOP_LEFT" mnemonicParsing="false" onAction="#tilføjSangPlaylist" style="-fx-background-color: transparent;">
                      <VBox.margin>
                         <Insets top="41.0" />
                      </VBox.margin>
@@ -130,12 +133,11 @@
                         <Insets bottom="5.0" top="10.0" />
                      </VBox.margin>
                   </Text>
-                  <TableView fx:id="songsTable" prefHeight="229.0" prefWidth="285.0">
+                  <TableView fx:id="songsTable" prefHeight="229.0" prefWidth="251.0">
                      <columns>
-                        <TableColumn fx:id="titleColumn" prefWidth="75.0" text="Titel" />
-                        <TableColumn fx:id="artistColumn" prefWidth="75.0" text="Kunstner" />
-                        <TableColumn fx:id="genreColumn" prefWidth="75.0" text="Genre" />
-                        <TableColumn fx:id="timeColumn" prefWidth="75.0" text="Tid" />
+                        <TableColumn fx:id="titleColumn" prefWidth="126.66668224334717" text="Titel" />
+                        <TableColumn fx:id="artistColumn" prefWidth="122.66664123535156" text="Kunstner" />
+                        <TableColumn fx:id="timeColumn" prefWidth="51.33331298828125" text="Tid" />
                      </columns>
                   </TableView>
                   <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
