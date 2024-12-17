@@ -4,18 +4,17 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Sange implements Serializable {
-    private static final long serialVersionUID = 1L;
+class Sange {
+    private final String artist;
+    private final int time;
+    private final String title;
+    private final String genre;
 
-    private String artist;
-    private String title;
-    int time;
-
-
-    Sange(String artist, int time, String title, String genre) {
+    public Sange(String artist, int time, String title, String genre) {
         this.artist = artist;
         this.time = time;
         this.title = title;
+        this.genre = genre;
     }
 
     public String getArtist() {
@@ -30,7 +29,7 @@ public class Sange implements Serializable {
         return title;
     }
 
-    public String toString() {
-        return artist + ", " + time + " " + title;
+    public String getGenre() {
+        return genre;
     }
 }
