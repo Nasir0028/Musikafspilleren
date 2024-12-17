@@ -1,5 +1,6 @@
 package com.example.musikafspiller.GUI;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,23 +10,64 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
 
+    private ObservableList<Playlist> playList;
     @FXML
-    private TableView<Playlist> tablePlaylist;
+    private TableView<Playlist> tablePlaylist = new TableView<>(playList);
 
     @FXML
     private TableColumn<Playlist, String> navnColumn;
 
     @FXML
     private TextField playlistInput;
+
+    @FXML
+    private TableView<Sange> sangePåPlaylist;
+
+    @FXML
+    void tilføjPlaylist(ActionEvent event) {
+        playList.add(new Playlist(playlistInput.getText()));
+    }
+
+    //!!!!!!!!! Erik skal hjælpe !!!!!!!!!!!!
+    @FXML
+    void tilføjSangPlaylist(ActionEvent event) {
+        tablePlaylist.getSelectionModel().selectedItemProperty().addListener((obs, oldPlaylist, newPlaylist) -> {
+            if (newPlaylist != null) {
+                sangeData.setAll(newPlaylist.getSangliste());
+            }
+            else {
+                sangeData.clear();
+            }
+        });
+
+        Playlist p = tablePlaylist.getSelectionModel().getSelectedItem();
+        if (p != null) {
+            Sange s = new Sange(sangNavnColumn.getText(), kunstnerColumn.getText());
+            p.tilknytSange(s);
+            sangeData.add(s);
+        }
+
+        sangNavnColumn.clear();
+        kunstnerColumn.clear();
+
+
+        
+        /*Sange s = songsTable.getSelectionModel().getSelectedItem();
+        Playlist p = tablePlaylist.getSelectionModel().getSelectedItem();
+        }*/
+    }
+
+
 
     @FXML
     private TableView<Sange> songsTable;
@@ -40,104 +82,79 @@ public class Controller {
     private TableColumn<Sange, String> timeColumn;
 
     @FXML
-    private TextField sangNavnInput;
-
-    @FXML
-    private TextField kunstnerInput;
-
-    @FXML
-    private TableView<Sange> sangePåPlaylist;
-
-    @FXML
     private TableColumn<Sange, String> sangNavnColumn;
 
     @FXML
     private TableColumn<Sange, String> kunstnerColumn;
 
-    private ObservableList<Playlist> playList;
-    private ObservableList<Sange> songsList;
+    private ObservableList<Sange> songsList; // Backing data for the TableView
+    private MediaPlayer currentMediaPlayer = null; // Media player for audio playback
+
     private ObservableList<Sange> sangeData;
 
-    private MediaPlayer currentMediaPlayer;
-
     public void initialize() {
-        // Initialize playlist table
-        playList = FXCollections.observableArrayList();
-        tablePlaylist.setItems(playList);
-        navnColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getNavn()));
-
-        // Initialize songs table
-        songsList = FXCollections.observableArrayList();
-        songsTable.setItems(songsList);
-        titleColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTitle()));
-        artistColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getArtist()));
+        // Initialize sange columns
+        titleColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getTitle())));
+        artistColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getArtist())));
         timeColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getTime())));
 
-        // Initialize songs in playlist table
+        // playlist column
+        navnColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getNavn())));
+
+        playList = FXCollections.observableArrayList();
+        tablePlaylist.setItems(playList);
+
+        sangNavnColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getTitle())));
+        kunstnerColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getArtist())));
+
         sangeData = FXCollections.observableArrayList();
         sangePåPlaylist.setItems(sangeData);
-        sangNavnColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getTitle()));
-        kunstnerColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getArtist()));
 
-        // Add listener for playlist selection
-        tablePlaylist.getSelectionModel().selectedItemProperty().addListener((obs, oldPlaylist, newPlaylist) -> {
-            if (newPlaylist != null) {
-                sangeData.setAll(newPlaylist.getSangliste());
-            } else {
-                sangeData.clear();
-            }
-        });
+
+        // Initialize ObservableList and bind it to the TableView
+        songsList = FXCollections.observableArrayList();
+        songsTable.setItems(songsList);
     }
 
-    @FXML
-    void tilføjPlaylist(ActionEvent event) {
-        String playlistName = playlistInput.getText().trim();
-        if (!playlistName.isEmpty()) {
-            playList.add(new Playlist(playlistName));
-            playlistInput.clear();
-        } else {
-            showAlert("Fejl", "Playlist navn kan ikke være tomt.", Alert.AlertType.ERROR);
-        }
+    public void play(){
+        currentMediaPlayer.play();
     }
 
-    @FXML
-    void tilføjSangPlaylist(ActionEvent event) {
-        Playlist selectedPlaylist = tablePlaylist.getSelectionModel().getSelectedItem();
-        if (selectedPlaylist != null) {
-            String sangNavn = sangNavnInput.getText().trim();
-            String kunstner = kunstnerInput.getText().trim();
+    public void pause(){
+        currentMediaPlayer.pause();
+    }
 
-            if (!sangNavn.isEmpty() && !kunstner.isEmpty()) {
-                Sange newSong = new Sange(kunstner, 0, sangNavn, "Ukendt Genre");
-                selectedPlaylist.tilknytSange(newSong);
-                sangeData.add(newSong);
-                sangNavnInput.clear();
-                kunstnerInput.clear();
-            } else {
-                showAlert("Fejl", "Sang navn og kunstner skal udfyldes.", Alert.AlertType.ERROR);
-            }
-        } else {
-            showAlert("Fejl", "Vælg en playlist først.", Alert.AlertType.ERROR);
-        }
+    public void handlePlayPause(){
+        play();
+        pause();
     }
 
     @FXML
     public void handleAddSong() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Songs");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Audio Files", "*.mp3", "*.wav"));
 
+        // Allow only audio files to be selected
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Audio Files", "*.mp3", "*.wav")
+        );
+
+        // Allow multiple file selection
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(new Stage());
         if (selectedFiles != null) {
             for (File file : selectedFiles) {
                 try {
-                    String titel = file.getName();
-                    String kunstner = "Ukendt Kunstner";
-                    String genre = "Ukendt Genre";
-                    int varighed = 0;
+                    // Default placeholders for song details
+                    String titel = file.getName(); // Use file name as the title
+                    String kunstner = "Ukendt Kunstner"; // Placeholder artist name
+                    String genre = "Ukendt Genre"; // Placeholder genre
+                    int varighed = 0; // Placeholder duration
 
+                    // Add the song to the ObservableList
                     songsList.add(new Sange(kunstner, varighed, titel, genre));
+                    System.out.println("Added song: " + titel);
 
+                    // Prepare the MediaPlayer for the first song
                     if (currentMediaPlayer == null) {
                         Media media = new Media(file.toURI().toString());
                         currentMediaPlayer = new MediaPlayer(media);
@@ -149,37 +166,4 @@ public class Controller {
             }
         }
     }
-
-    public void play() {
-        if (currentMediaPlayer != null) {
-            currentMediaPlayer.play();
-        }
-    }
-
-    public void pause() {
-        if (currentMediaPlayer != null) {
-            currentMediaPlayer.pause();
-        }
-    }
-
-    public void handlePlayPause() {
-        if (currentMediaPlayer != null) {
-            if (currentMediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
-                pause();
-            } else {
-                play();
-            }
-        }
-    }
-
-    private void showAlert(String title, String message, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-
-
 }
-
