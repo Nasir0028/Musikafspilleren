@@ -1,6 +1,5 @@
 package com.example.musikafspiller.GUI;
 
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
@@ -8,16 +7,14 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
@@ -40,7 +37,6 @@ public class Controller {
         playList.add(new Playlist(playlistInput.getText()));
     }
 
-    //!!!!!!!!! Erik skal hjælpe !!!!!!!!!!!!
     @FXML
     void tilføjSangPlaylist(ActionEvent event) {
         tablePlaylist.getSelectionModel().selectedItemProperty().addListener((obs, oldPlaylist, newPlaylist) -> {
@@ -58,7 +54,29 @@ public class Controller {
         sangeData.add(s);
     }
 
+    @FXML
+    void handleClearPlaylist(ActionEvent event) {
+        int selectedIndex = tablePlaylist.getSelectionModel().getSelectedIndex();
+        if (selectedIndex >= 0) {
+            tablePlaylist.getItems().remove(selectedIndex);
+        }
+    }
 
+    @FXML
+    void handleClearSange(ActionEvent event) {
+        int selectedIndex = songsTable.getSelectionModel().getSelectedIndex();
+        if (selectedIndex >= 0) {
+            songsTable.getItems().remove(selectedIndex);
+        }
+    }
+
+    @FXML
+    void handleClearSangePlaylist(ActionEvent event) {
+        int selectedIndex = sangePåPlaylist.getSelectionModel().getSelectedIndex();
+        if (selectedIndex >= 0) {
+            sangePåPlaylist.getItems().remove(selectedIndex);
+        }
+    }
 
     @FXML
     private TableView<Sange> songsTable;
@@ -107,17 +125,13 @@ public class Controller {
         songsTable.setItems(songsList);
     }
 
-    public void play(){
-        currentMediaPlayer.play();
-    }
-
-    public void pause(){
-        currentMediaPlayer.pause();
-    }
-
-    public void handlePlayPause(){
-        play();
-        pause();
+    @FXML
+    void handlePlayPause(ActionEvent event) {
+        if (currentMediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+            currentMediaPlayer.pause();
+        } else {
+            currentMediaPlayer.play();
+        }
     }
 
     @FXML
