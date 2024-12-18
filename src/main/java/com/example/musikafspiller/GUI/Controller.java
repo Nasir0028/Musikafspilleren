@@ -156,6 +156,11 @@ public class Controller {
         try {
             String songPath = song.getFilePath();
 
+            if (currentMediaPlayer != null && currentMediaPlayer.getMedia().getSource().equals(new File(songPath).toURI().toString())) {
+                currentMediaPlayer.play(); 
+                return;
+            }
+
             if (currentMediaPlayer != null) {
                 currentMediaPlayer.stop();
             }
