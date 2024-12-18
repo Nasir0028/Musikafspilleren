@@ -98,6 +98,8 @@ public class Controller {
 
     private ObservableList<Sange> songsList; // Backing data for the TableView
     private MediaPlayer currentMediaPlayer = null; // Media player for audio playback
+    private int currentSongIndex = -1; // Holder styr på den aktuelle sangs position
+
 
     private ObservableList<Sange> sangeData;
 
@@ -133,6 +135,25 @@ public class Controller {
             currentMediaPlayer.play();
         }
     }
+    @FXML
+    void handleBackwardsSange(ActionEvent event) {
+        if (!songsList.isEmpty() && currentSongIndex > 0) {
+            currentSongIndex--;
+            playSongAtIndex(currentSongIndex);
+        } else {
+            System.out.println("Der er ingen tidligere sang.");
+        }
+    }
+
+    @FXML
+    void handleForwardSange(ActionEvent event) {
+        if (!songsList.isEmpty() && currentSongIndex < songsList.size() - 1) {
+            currentSongIndex++;
+            playSongAtIndex(currentSongIndex);
+        } else {
+            System.out.println("Der er ingen næste sang.");
+        }
+    }
 
     @FXML
     public void handleAddSong() {
@@ -144,40 +165,31 @@ public class Controller {
         if (selectedFiles != null) {
             for (File file : selectedFiles) {
                 try {
-
                     Media media = new Media(file.toURI().toString());
                     MediaPlayer mediaPlayer = new MediaPlayer(media);
-
 
                     final String[] title = {file.getName()};
                     final String[] artist = {"?"};
                     final int[] timeInSeconds = {0};
 
-
                     media.getMetadata().addListener((MapChangeListener<? super String, ? super Object>) (change) -> {
                         media.getMetadata().forEach((key, value) -> {
-                            if (key.equals("title")) {
+                            if (key.equalsIgnoreCase("title")) {
                                 title[0] = value.toString();
-                            } else if (key.equals("artist")) {
+                            } else if (key.equalsIgnoreCase("artist")) {
                                 artist[0] = value.toString();
                             }
                         });
                     });
 
-
                     mediaPlayer.setOnReady(() -> {
                         Duration duration = media.getDuration();
                         timeInSeconds[0] = (int) duration.toSeconds();
 
+                        Sange newSong = new Sange(artist[0], timeInSeconds[0], title[0], file.getAbsolutePath());
+                        songsList.add(newSong);
 
-                        int minutes = timeInSeconds[0] / 60;
-                        int seconds = timeInSeconds[0] % 60;
-                        String formattedTime = String.format("%d:%02d", minutes, seconds);
-
-
-                        songsList.add(new Sange(artist[0], timeInSeconds[0], title[0]));
-                        System.out.println("Added song: " + title[0] + ", Artist: " + artist[0] + ", Duration: " + formattedTime);
-
+                        System.out.println("Added song: " + newSong.getTitle() + ", Artist: " + newSong.getArtist() + ", Duration: " + newSong.getFormattedTime());
 
                         if (currentMediaPlayer == null) {
                             currentMediaPlayer = mediaPlayer;
@@ -190,9 +202,28 @@ public class Controller {
                 }
             }
         }
+    }
+    private void playSongAtIndex(int index) {
+        if (index >= 0 && index < songsList.size()) {
+            Sange selectedSong = songsList.get(index);
+            String songPath = selectedSong.getFilePath(); // Antag, at Sange-klassen har en metode til at få filstien
 
+            try {
+                // Stop den nuværende sang, hvis en afspilles
+                if (currentMediaPlayer != null) {
+                    currentMediaPlayer.stop();
+                }
 
+                // Opret en ny MediaPlayer til den valgte sang
+                Media media = new Media(new File(songPath).toURI().toString());
+                currentMediaPlayer = new MediaPlayer(media);
 
-
+                currentMediaPlayer.play();
+                System.out.println("Afspiller: " + selectedSong.getTitle());
+            } catch (Exception e) {
+                System.err.println("Fejl under afspilning af sang: " + selectedSong.getTitle());
+                e.printStackTrace();
+            }
+        }
     }
 }

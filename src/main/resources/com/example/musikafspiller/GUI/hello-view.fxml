@@ -14,7 +14,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="475.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.musikafspiller.GUI.Controller">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="475.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.musikafspiller.GUI.Controller">
    <center>
       <HBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="500.0" BorderPane.alignment="CENTER">
          <children>
@@ -205,7 +205,7 @@
                   <HBox alignment="CENTER" prefHeight="33.0" prefWidth="376.0">
                      <children>
                         <Button fx:id="repeatPlaylist" mnemonicParsing="false" />
-                        <Button fx:id="backwards" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                        <Button fx:id="backwards" mnemonicParsing="false" onAction="#handleBackwardsSange" style="-fx-background-color: transparent;">
                            <graphic>
                               <ImageView fitHeight="23.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -228,7 +228,7 @@
                                     <Image url="@../images/Pil-Play.png" />
                                  </image></ImageView>
                            </graphic></Button>
-                        <Button fx:id="forward" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                        <Button fx:id="forward" mnemonicParsing="false" onAction="#handleForwardSange" style="-fx-background-color: transparent;">
                            <graphic>
                               <ImageView fitHeight="23.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
