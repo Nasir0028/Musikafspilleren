@@ -194,10 +194,17 @@
             </VBox>
             <VBox prefHeight="55.0" prefWidth="376.0">
                <children>
-                  <HBox prefHeight="27.0" prefWidth="371.0" />
+                  <HBox prefHeight="5.0" prefWidth="376.0" />
                   <HBox alignment="CENTER" prefHeight="33.0" prefWidth="376.0">
                      <children>
-                        <Button fx:id="repeatPlaylist" mnemonicParsing="false" />
+                        <Button mnemonicParsing="false" onAction="#handleRepeatPlaylist" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <ImageView fitHeight="29.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Repeat.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
                         <Button fx:id="backwards" mnemonicParsing="false" onAction="#handleBackwardsSange" style="-fx-background-color: transparent;">
                            <graphic>
                               <ImageView fitHeight="23.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
@@ -228,7 +235,14 @@
                                     <Image url="@../images/Forward.png" />
                                  </image></ImageView>
                            </graphic></Button>
-                        <Button fx:id="shuffle" mnemonicParsing="false" />
+                        <Button mnemonicParsing="false" onAction="#handleShufflePlaylist" style="-fx-background-color: transparent;">
+                           <graphic>
+                              <ImageView fitHeight="28.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/Shuffle.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefHeight="19.0" prefWidth="376.0">

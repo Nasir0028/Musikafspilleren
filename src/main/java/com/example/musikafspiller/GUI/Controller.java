@@ -21,6 +21,14 @@ import java.util.List;
 
 public class Controller {
 
+    private enum RepeatMode {
+        NONE,          // No repeat
+        SINGLE_SONG,   // Repeat the current song
+        PLAYLIST       // Repeat the entire playlist
+    }
+
+    private RepeatMode currentRepeatMode = RepeatMode.NONE; // Start with no repeat
+
     @FXML
     private Text artistName;
 
@@ -136,7 +144,6 @@ public class Controller {
         String formattedTime = (hours > 0) ?
                 String.format("%02d:%02d:%02d", hours, minutes, seconds) :
                 String.format("%02d:%02d", minutes, seconds);
-        System.out.println("Formatted time: " + formattedTime); // Debug log
         return formattedTime;
     }
 
@@ -207,7 +214,7 @@ public class Controller {
             Platform.runLater(() -> {
                 String formattedCurrentTime = formatDuration(newValue);
                 System.out.println("Updating Current Time: " + formattedCurrentTime);
-                songCurrentTimer.setText(formattedCurrentTime); // Update current time
+                songCurrentTimer.setText(formattedCurrentTime);
             });
         });
 
@@ -215,7 +222,7 @@ public class Controller {
             Duration totalDuration = currentMediaPlayer.getMedia().getDuration();
             if (totalDuration != null && !totalDuration.isUnknown()) {
                 Platform.runLater(() -> {
-                    songEndTimer.setText(formatDuration(totalDuration)); // Set end time
+                    songEndTimer.setText(formatDuration(totalDuration));
                     musicSlider.setMax(totalDuration.toSeconds());
                 });
             } else {
@@ -264,9 +271,82 @@ public class Controller {
 
     private void handleNextSong() {
         if (currentSongIndex < sangeData.size() - 1) {
-            playSongAtIndex(currentSongIndex + 1);
+            currentSongIndex++;
+            playSongAtIndex(currentSongIndex);
         } else {
-            System.out.println("Playlisten er slut.");
+            if (currentRepeatMode == RepeatMode.PLAYLIST) {
+                currentSongIndex = 0;
+                playSongAtIndex(currentSongIndex);
+            } else {
+                System.out.println("Playlisten er slut.");
+            }
+        }
+    }
+
+    @FXML
+    void handleShufflePlaylist(ActionEvent event) {
+        if (sangeData.size() > 1) {
+            java.util.Collections.shuffle(sangeData);
+            currentSongIndex = -1;
+            System.out.println("Playlist shuffled.");
+        } else {
+            System.out.println("Ikke nok sange til at shuffle.");
+        }
+    }
+
+    @FXML
+    void handleRepeatPlaylist(ActionEvent event) {
+        // Toggle the repeat mode
+        switch (currentRepeatMode) {
+            case NONE:
+                currentRepeatMode = RepeatMode.SINGLE_SONG;  // Set to repeat the current song
+                System.out.println("Repeat mode: Single Song");
+                break;
+
+            case SINGLE_SONG:
+                currentRepeatMode = RepeatMode.PLAYLIST;  // Set to repeat the playlist
+                System.out.println("Repeat mode: Playlist");
+                break;
+
+            case PLAYLIST:
+                currentRepeatMode = RepeatMode.NONE;  // Disable repeat
+                System.out.println("Repeat mode: None");
+                break;
+        }
+
+        updateRepeatBehavior(); // Update behavior based on the current repeat mode
+    }
+
+    private void updateRepeatBehavior() {
+        if (currentRepeatMode == RepeatMode.SINGLE_SONG) {
+            if (currentMediaPlayer != null) {
+                // Repeat the current song
+                currentMediaPlayer.setOnEndOfMedia(() -> {
+                    currentMediaPlayer.seek(Duration.ZERO);
+                    currentMediaPlayer.play();
+                    System.out.println("Repeating current song.");
+                });
+            }
+        } else if (currentRepeatMode == RepeatMode.PLAYLIST) {
+            if (currentMediaPlayer != null) {
+                // Repeat the entire playlist
+                currentMediaPlayer.setOnEndOfMedia(() -> {
+                    if (currentSongIndex >= sangeData.size() - 1) {
+                        currentSongIndex = 0; // Go back to the first song
+                    } else {
+                        currentSongIndex++; // Go to the next song
+                    }
+                    playSongAtIndex(currentSongIndex); // Play the next song
+                    System.out.println("Repeating playlist.");
+                });
+            }
+        } else {
+            if (currentMediaPlayer != null) {
+                // No repeat
+                currentMediaPlayer.setOnEndOfMedia(() -> {
+                    System.out.println("Playlist finished, no repeat.");
+                });
+            }
         }
     }
 
