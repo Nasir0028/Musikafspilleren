@@ -33,6 +33,9 @@ public class Controller {
     private TableView<Sange> sangePåPlaylist;
 
     @FXML
+    private Slider soundDrag; // Volume slider
+
+    @FXML
     void tilføjPlaylist(ActionEvent event) {
         playList.add(new Playlist(playlistInput.getText()));
     }
@@ -134,6 +137,34 @@ public class Controller {
                 }
             }
         });
+
+        // Initialize volume slider
+        if (soundDrag != null) {
+            soundDrag.setMin(0);
+            soundDrag.setMax(100);
+            soundDrag.setValue(0);
+
+            // Listener to adjust volume
+            soundDrag.valueProperty().addListener((observable, oldValue, newValue) -> {
+                if (currentMediaPlayer != null) {
+                    currentMediaPlayer.setVolume(newValue.doubleValue() / 100);
+                }
+            });
+        }
+    }
+
+    @FXML
+    void handleMute(ActionEvent event) {
+        if (currentMediaPlayer != null) {
+            if (currentMediaPlayer.isMute()) {
+                currentMediaPlayer.setMute(false);
+        }
+            else {
+                currentMediaPlayer.setMute(true);}
+        }
+        else {
+            System.out.println("No song is currently loaded.");
+        }
     }
 
     @FXML
@@ -144,7 +175,6 @@ public class Controller {
             if (currentMediaPlayer != null && currentMediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
                 currentMediaPlayer.pause();
             } else {
-                // Play the selected song
                 playSong(selectedSong);
             }
         } else {
@@ -157,7 +187,7 @@ public class Controller {
             String songPath = song.getFilePath();
 
             if (currentMediaPlayer != null && currentMediaPlayer.getMedia().getSource().equals(new File(songPath).toURI().toString())) {
-                currentMediaPlayer.play(); 
+                currentMediaPlayer.play();
                 return;
             }
 
