@@ -3,6 +3,7 @@ package com.example.musikafspiller.GUI;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +14,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -123,36 +125,60 @@ public class Controller {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Songs");
 
-        // Allow only audio files to be selected
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Audio Files", "*.mp3", "*.wav")
-        );
 
-        // Allow multiple file selection
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(new Stage());
         if (selectedFiles != null) {
             for (File file : selectedFiles) {
                 try {
-                    // Default placeholders for song details
-                    String titel = file.getName(); // Use file name as the title
-                    String kunstner = "Ukendt Kunstner"; // Placeholder artist name
-                    String genre = "Ukendt Genre"; // Placeholder genre
-                    int varighed = 0; // Placeholder duration
 
-                    // Add the song to the ObservableList
-                    songsList.add(new Sange(kunstner, varighed, titel, genre));
-                    System.out.println("Added song: " + titel);
+                    Media media = new Media(file.toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(media);
 
-                    // Prepare the MediaPlayer for the first song
-                    if (currentMediaPlayer == null) {
-                        Media media = new Media(file.toURI().toString());
-                        currentMediaPlayer = new MediaPlayer(media);
-                    }
+
+                    final String[] title = {file.getName()};
+                    final String[] artist = {"?"};
+                    final int[] timeInSeconds = {0};
+
+
+                    media.getMetadata().addListener((MapChangeListener<? super String, ? super Object>) (change) -> {
+                        media.getMetadata().forEach((key, value) -> {
+                            if (key.equals("title")) {
+                                title[0] = value.toString();
+                            } else if (key.equals("artist")) {
+                                artist[0] = value.toString();
+                            }
+                        });
+                    });
+
+
+                    mediaPlayer.setOnReady(() -> {
+                        Duration duration = media.getDuration();
+                        timeInSeconds[0] = (int) duration.toSeconds();
+
+
+                        int minutes = timeInSeconds[0] / 60;
+                        int seconds = timeInSeconds[0] % 60;
+                        String formattedTime = String.format("%d:%02d", minutes, seconds);
+
+
+                        songsList.add(new Sange(artist[0], timeInSeconds[0], title[0]));
+                        System.out.println("Added song: " + title[0] + ", Artist: " + artist[0] + ", Duration: " + formattedTime);
+
+
+                        if (currentMediaPlayer == null) {
+                            currentMediaPlayer = mediaPlayer;
+                        }
+                    });
+
                 } catch (Exception e) {
                     System.err.println("Error adding file: " + file.getName());
                     e.printStackTrace();
                 }
             }
         }
+
+
+
+
     }
 }

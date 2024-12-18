@@ -1,23 +1,22 @@
 package com.example.musikafspiller.GUI;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Sange implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String artist;
     private String title;
-    int time;
+    private int time;
 
-
-    Sange(String artist, int time, String title, String genre) {
+    // Konstruktør
+    public Sange(String artist, int time, String title) {
         this.artist = artist;
         this.time = time;
         this.title = title;
     }
 
+    // Getters
     public String getArtist() {
         return artist;
     }
@@ -30,7 +29,9 @@ public class Sange implements Serializable {
         return title;
     }
 
+    // toString-metode
+    @Override
     public String toString() {
-        return artist + ", " + time + " " + title;
+        return artist + ", " + time + " sekunder, " + title;
     }
 }
