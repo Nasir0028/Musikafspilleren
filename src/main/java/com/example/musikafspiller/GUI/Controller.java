@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -19,6 +20,12 @@ import java.io.*;
 import java.util.List;
 
 public class Controller {
+
+    @FXML
+    private Text artistName;
+
+    @FXML
+    private Text songPlay;
 
     private ObservableList<Playlist> playList;
     @FXML
@@ -185,7 +192,7 @@ public class Controller {
                 currentMediaPlayer.setMute(true);}
         }
         else {
-            System.out.println("No song is currently loaded.");
+            System.out.println("Ingen sang er loaded.");
         }
     }
 
@@ -200,7 +207,7 @@ public class Controller {
                 playSong(selectedSong);
             }
         } else {
-            System.out.println("No song selected in the playlist.");
+            System.out.println("Ingen sang valgt på playlisten.");
         }
     }
 
@@ -208,7 +215,7 @@ public class Controller {
         if (currentSongIndex < songsList.size() - 1) {
             playSongAtIndex(currentSongIndex + 1);
         } else {
-            System.out.println("End of playlist.");
+            System.out.println("Playlisten er slut.");
         }
     }
 
@@ -264,7 +271,7 @@ public class Controller {
 
     @FXML
     void handleBackwardsSange(ActionEvent event) {
-        if (!songsList.isEmpty() && currentSongIndex > 0) {
+        if (currentSongIndex > 0) {
             currentSongIndex--;
             playSongAtIndex(currentSongIndex);
         } else {
@@ -274,7 +281,7 @@ public class Controller {
 
     @FXML
     void handleForwardSange(ActionEvent event) {
-        if (!songsList.isEmpty() && currentSongIndex < songsList.size() - 1) {
+        if (currentSongIndex < songsList.size() - 1) {
             currentSongIndex++;
             playSongAtIndex(currentSongIndex);
         } else {
@@ -345,6 +352,19 @@ public class Controller {
                 // Opret en ny MediaPlayer til den valgte sang
                 Media media = new Media(new File(songPath).toURI().toString());
                 currentMediaPlayer = new MediaPlayer(media);
+
+                currentMediaPlayer.setOnReady(() -> {
+                    musicSlider.setMax(currentMediaPlayer.getMedia().getDuration().toSeconds());
+                    musicSlider.setValue(0); // Reset the slider to the start
+                });
+
+                // Reattach the listener to update the slider position
+                currentTimeListener = (observable, oldValue, newValue) -> {
+                    if (!musicSlider.isValueChanging()) {
+                        musicSlider.setValue(newValue.toSeconds());
+                    }
+                };
+                currentMediaPlayer.currentTimeProperty().addListener(currentTimeListener);
 
                 currentMediaPlayer.play();
                 System.out.println("Afspiller: " + selectedSong.getTitle());
