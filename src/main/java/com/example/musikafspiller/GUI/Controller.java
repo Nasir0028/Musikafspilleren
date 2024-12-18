@@ -116,7 +116,7 @@ public class Controller {
     @FXML
     private TableColumn<Sange, String> kunstnerColumn;
 
-    private ObservableList<Sange> songsList; // Backing data for the TableView
+    private ObservableList<Sange> songsList;
     private MediaPlayer currentMediaPlayer = null; // Media player for audio playback
     private int currentSongIndex = -1; // Holder styr på den aktuelle sangs position
 
@@ -146,12 +146,10 @@ public class Controller {
     }
 
     public void initialize() {
-        // Initialize sange columns
         titleColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getTitle())));
         artistColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getArtist())));
         timeColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getTime())));
 
-        // playlist column
         navnColumn.setCellValueFactory(data -> new SimpleStringProperty(String.valueOf(data.getValue().getNavn())));
 
         playList = FXCollections.observableArrayList();
@@ -163,8 +161,6 @@ public class Controller {
         sangeData = FXCollections.observableArrayList();
         sangePåPlaylist.setItems(sangeData);
 
-
-        // Initialize ObservableList and bind it to the TableView
         songsList = FXCollections.observableArrayList();
         songsTable.setItems(songsList);
 
@@ -177,13 +173,11 @@ public class Controller {
             }
         });
 
-        // Initialize volume slider
         if (soundDrag != null) {
             soundDrag.setMin(0);
             soundDrag.setMax(100);
             soundDrag.setValue(0);
 
-            // Listener to adjust volume
             soundDrag.valueProperty().addListener((observable, oldValue, newValue) -> {
                 if (currentMediaPlayer != null) {
                     currentMediaPlayer.setVolume(newValue.doubleValue() / 100);
@@ -280,21 +274,18 @@ public class Controller {
         try {
             String songPath = song.getFilePath();
 
-            // Update song and artist immediately when the song is selected
-            songPlay.setText(song.getTitle()); // Set song title
-            artistName.setText(song.getArtist()); // Set artist name
+            songPlay.setText(song.getTitle());
+            artistName.setText(song.getArtist());
 
-            // Check if the song is already playing; if so, just resume it
             if (currentMediaPlayer != null && currentMediaPlayer.getMedia().getSource().equals(new File(songPath).toURI().toString())) {
                 currentMediaPlayer.play();
                 return;
             }
 
-            // Stop the previous song (if any) and remove the listener
             if (currentMediaPlayer != null) {
                 currentMediaPlayer.stop();
                 if (currentTimeListener != null) {
-                    currentMediaPlayer.currentTimeProperty().removeListener(currentTimeListener); // Remove old listener
+                    currentMediaPlayer.currentTimeProperty().removeListener(currentTimeListener);
                 }
             }
 
@@ -302,55 +293,48 @@ public class Controller {
             songEndTimer.setText("00:00");
             musicSlider.setValue(0);
 
-            // Create a new MediaPlayer for the new song
             Media media = new Media(new File(songPath).toURI().toString());
             currentMediaPlayer = new MediaPlayer(media);
 
-            // Attach the currentTimeProperty listener to update current time and slider
             currentTimeListener = (observable, oldValue, newValue) -> {
                 Platform.runLater(() -> {
                     String formattedCurrentTime = formatDuration(newValue);
-                    songCurrentTimer.setText(formattedCurrentTime); // Update current time text
+                    songCurrentTimer.setText(formattedCurrentTime);
                     if (!musicSlider.isValueChanging()) {
-                        musicSlider.setValue(newValue.toSeconds()); // Update slider position
+                        musicSlider.setValue(newValue.toSeconds());
                     }
                 });
             };
-            currentMediaPlayer.currentTimeProperty().addListener(currentTimeListener); // Attach listener once
+            currentMediaPlayer.currentTimeProperty().addListener(currentTimeListener);
 
-            // Set up the song once it's ready to play
             currentMediaPlayer.setOnReady(() -> {
                 Duration songDuration = currentMediaPlayer.getMedia().getDuration();
                 double songDurationInSeconds = songDuration.toSeconds();
 
-                musicSlider.setMax(songDurationInSeconds); // Set slider max value to the song's duration
-                musicSlider.setValue(0); // Reset slider to the start
-                songPlay.setText(song.getTitle()); // Set song title
-                artistName.setText(song.getArtist()); // Set artist name
+                musicSlider.setMax(songDurationInSeconds);
+                musicSlider.setValue(0);
+                songPlay.setText(song.getTitle());
+                artistName.setText(song.getArtist());
 
                 String formattedEndTime = formatDuration(songDuration);
                 songEndTimer.setText(formattedEndTime);
             });
 
-            // Handle the end of the song (next song or reset)
             currentMediaPlayer.setOnEndOfMedia(() -> handleNextSong());
 
-            // Handle user interaction with the slider to seek to different times
             musicSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
                 if (musicSlider.isValueChanging() && currentMediaPlayer != null) {
                     Duration seekTime = Duration.seconds(newValue.doubleValue());
-                    currentMediaPlayer.seek(seekTime); // Seek to the new position
+                    currentMediaPlayer.seek(seekTime);
                 }
             });
 
-            // Stop the song and reset UI elements when the song stops
             currentMediaPlayer.setOnStopped(() -> {
-                songCurrentTimer.setText("00:00"); // Reset current time text
-                songEndTimer.setText("00:00"); // Reset end time text
-                musicSlider.setValue(0); // Reset the slider
+                songCurrentTimer.setText("00:00");
+                songEndTimer.setText("00:00");
+                musicSlider.setValue(0);
             });
 
-            // Start playing the song
             currentMediaPlayer.play();
             System.out.println("Playing: " + song.getTitle());
 
@@ -446,7 +430,7 @@ public class Controller {
     private void playSongAtIndex(int index) {
         if (index >= 0 && index < sangeData.size()) {
             Sange selectedSong = sangeData.get(index);
-            playSong(selectedSong); // Call the playSong method directly
+            playSong(selectedSong);
         }
     }
 }
