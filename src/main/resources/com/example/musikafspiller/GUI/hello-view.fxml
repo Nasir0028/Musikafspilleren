@@ -252,7 +252,7 @@
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="19.0" prefWidth="376.0">
                      <children>
-                        <Slider fx:id="musicPlayer" prefHeight="14.0" prefWidth="364.0" />
+                        <Slider fx:id="musicSlider" prefHeight="14.0" prefWidth="364.0" />
                      </children>
                   </HBox>
                </children>

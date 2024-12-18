@@ -1,13 +1,14 @@
 package com.example.musikafspiller.GUI;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
@@ -33,7 +34,10 @@ public class Controller {
     private TableView<Sange> sangePåPlaylist;
 
     @FXML
-    private Slider soundDrag; // Volume slider
+    private Slider soundDrag;
+
+    @FXML
+    private Slider musicSlider;
 
     @FXML
     void tilføjPlaylist(ActionEvent event) {
@@ -103,8 +107,14 @@ public class Controller {
     private MediaPlayer currentMediaPlayer = null; // Media player for audio playback
     private int currentSongIndex = -1; // Holder styr på den aktuelle sangs position
 
-
     private ObservableList<Sange> sangeData;
+
+    private ChangeListener<Duration> currentTimeListener;
+
+    public Controller() {
+        playList = FXCollections.observableArrayList();
+        songsList = FXCollections.observableArrayList();
+    }
 
     public void initialize() {
         // Initialize sange columns
@@ -151,6 +161,18 @@ public class Controller {
                 }
             });
         }
+
+        if (musicSlider != null) {
+            musicSlider.setMin(0);
+            musicSlider.setValue(0);
+
+            musicSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+                if (musicSlider.isValueChanging() && currentMediaPlayer != null) {
+                    Duration seekTime = Duration.seconds(newValue.doubleValue());
+                    currentMediaPlayer.seek(seekTime);
+                }
+            });
+        }
     }
 
     @FXML
@@ -182,6 +204,14 @@ public class Controller {
         }
     }
 
+    private void handleNextSong() {
+        if (currentSongIndex < songsList.size() - 1) {
+            playSongAtIndex(currentSongIndex + 1);
+        } else {
+            System.out.println("End of playlist.");
+        }
+    }
+
     private void playSong(Sange song) {
         try {
             String songPath = song.getFilePath();
@@ -193,10 +223,36 @@ public class Controller {
 
             if (currentMediaPlayer != null) {
                 currentMediaPlayer.stop();
+                if (currentTimeListener != null) {
+                    currentMediaPlayer.currentTimeProperty().removeListener(currentTimeListener);
+                }
             }
 
             Media media = new Media(new File(songPath).toURI().toString());
             currentMediaPlayer = new MediaPlayer(media);
+
+            currentMediaPlayer.setOnReady(() -> {
+                musicSlider.setMax(currentMediaPlayer.getMedia().getDuration().toSeconds());
+                musicSlider.setValue(0); // Reset slider to the start
+            });
+
+            currentTimeListener = (observable, oldValue, newValue) -> {
+                Platform.runLater(() -> {
+                    if (!musicSlider.isValueChanging()) {
+                        musicSlider.setValue(newValue.toSeconds());
+                    }
+                });
+            };
+            currentMediaPlayer.currentTimeProperty().addListener(currentTimeListener);
+
+            musicSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+                if (musicSlider.isValueChanging() && currentMediaPlayer != null) {
+                    Duration seekTime = Duration.seconds(newValue.doubleValue());
+                    currentMediaPlayer.seek(seekTime);
+                }
+            });
+
+            currentMediaPlayer.setOnEndOfMedia(() -> handleNextSong());
 
             currentMediaPlayer.play();
             System.out.println("Playing: " + song.getTitle());
@@ -274,6 +330,7 @@ public class Controller {
             }
         }
     }
+
     private void playSongAtIndex(int index) {
         if (index >= 0 && index < songsList.size()) {
             Sange selectedSong = songsList.get(index);
