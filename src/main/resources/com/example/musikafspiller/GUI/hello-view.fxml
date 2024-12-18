@@ -174,30 +174,23 @@
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0">
                <children>
-                  <ImageView fx:id="albumCover" fitHeight="105.0" fitWidth="105.0" pickOnBounds="true" preserveRatio="true">
-
+                  <Text fx:id="songPlay" strokeType="OUTSIDE" strokeWidth="0.0" text="Song Title" wrappingWidth="200.0">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="artistName" strokeType="OUTSIDE" strokeWidth="0.0" text="Artist Name" wrappingWidth="200.0">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
                      <VBox.margin>
-                        <Insets bottom="15.0" left="15.0" />
+                        <Insets bottom="5.0" />
                      </VBox.margin>
-                  </ImageView>
-               </children>
-            </VBox>
-            <VBox alignment="BOTTOM_LEFT" prefHeight="121.0" prefWidth="116.0" spacing="5.0">
-               <children>
-                  <Text fx:id="songPlay" strokeType="OUTSIDE" strokeWidth="0.0" text="TEXT">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font>
-                  </Text>
-                  <Text fx:id="artistName" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
-                     <font>
-                        <Font name="System Bold" size="14.0" />
-                     </font>
                   </Text>
                </children>
-               <HBox.margin>
-                  <Insets bottom="15.0" left="10.0" />
-               </HBox.margin>
+               <padding>
+                  <Insets left="15.0" top="50.0" />
+               </padding>
             </VBox>
             <VBox prefHeight="55.0" prefWidth="376.0">
                <children>
@@ -238,11 +231,19 @@
                         <Button fx:id="shuffle" mnemonicParsing="false" />
                      </children>
                   </HBox>
-                  <HBox alignment="CENTER_RIGHT" prefHeight="19.0" prefWidth="376.0">
+                  <HBox alignment="CENTER_LEFT" prefHeight="19.0" prefWidth="376.0">
                      <children>
-                        <Text fx:id="songTimer" strokeType="OUTSIDE" strokeWidth="0.0" text="TID">
+                        <Text fx:id="songCurrentTimer" strokeType="OUTSIDE" strokeWidth="0.0">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
                            <HBox.margin>
-                              <Insets right="10.0" />
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                        </Text>
+                        <Text fx:id="songEndTimer" strokeType="OUTSIDE" strokeWidth="0.0">
+                           <HBox.margin>
+                              <Insets left="270.0" />
                            </HBox.margin>
                            <font>
                               <Font name="System Bold" size="12.0" />

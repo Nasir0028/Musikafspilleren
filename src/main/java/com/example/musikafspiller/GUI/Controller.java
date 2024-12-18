@@ -27,6 +27,12 @@ public class Controller {
     @FXML
     private Text songPlay;
 
+    @FXML
+    private Text songCurrentTimer;
+
+    @FXML
+    private Text songEndTimer;
+
     private ObservableList<Playlist> playList;
     @FXML
     private TableView<Playlist> tablePlaylist = new TableView<>(playList);
@@ -118,6 +124,22 @@ public class Controller {
 
     private ChangeListener<Duration> currentTimeListener;
 
+    private String formatDuration(Duration duration) {
+        if (duration == null || duration.isUnknown()) {
+            return "00:00";
+        }
+        int totalSeconds = (int) Math.floor(duration.toSeconds());
+        int hours = totalSeconds / 3600;
+        int minutes = (totalSeconds % 3600) / 60;
+        int seconds = totalSeconds % 60;
+
+        String formattedTime = (hours > 0) ?
+                String.format("%02d:%02d:%02d", hours, minutes, seconds) :
+                String.format("%02d:%02d", minutes, seconds);
+        System.out.println("Formatted time: " + formattedTime); // Debug log
+        return formattedTime;
+    }
+
     public Controller() {
         playList = FXCollections.observableArrayList();
         songsList = FXCollections.observableArrayList();
@@ -180,6 +202,41 @@ public class Controller {
                 }
             });
         }
+
+        setupMediaPlayerListeners();
+    }
+
+    private void setupMediaPlayerListeners() {
+        if (currentMediaPlayer == null) return;
+
+        currentMediaPlayer.currentTimeProperty().addListener((observable, oldValue, newValue) -> {
+            Platform.runLater(() -> {
+                String formattedCurrentTime = formatDuration(newValue);
+                System.out.println("Updating Current Time: " + formattedCurrentTime);
+                songCurrentTimer.setText(formattedCurrentTime); // Update current time
+            });
+        });
+
+        currentMediaPlayer.setOnReady(() -> {
+            Duration totalDuration = currentMediaPlayer.getMedia().getDuration();
+            if (totalDuration != null && !totalDuration.isUnknown()) {
+                Platform.runLater(() -> {
+                    songEndTimer.setText(formatDuration(totalDuration)); // Set end time
+                    musicSlider.setMax(totalDuration.toSeconds());
+                });
+            } else {
+                System.err.println("Media duration is unknown.");
+            }
+        });
+
+        currentMediaPlayer.getMedia().durationProperty().addListener((obs, oldDur, newDur) -> {
+            if (newDur != null && !newDur.isUnknown()) {
+                Platform.runLater(() -> {
+                    songEndTimer.setText(formatDuration(newDur));
+                    musicSlider.setMax(newDur.toSeconds());
+                });
+            }
+        });
     }
 
     @FXML
@@ -212,7 +269,7 @@ public class Controller {
     }
 
     private void handleNextSong() {
-        if (currentSongIndex < songsList.size() - 1) {
+        if (currentSongIndex < sangeData.size() - 1) {
             playSongAtIndex(currentSongIndex + 1);
         } else {
             System.out.println("Playlisten er slut.");
@@ -223,46 +280,80 @@ public class Controller {
         try {
             String songPath = song.getFilePath();
 
+            // Update song and artist immediately when the song is selected
+            songPlay.setText(song.getTitle()); // Set song title
+            artistName.setText(song.getArtist()); // Set artist name
+
+            // Check if the song is already playing; if so, just resume it
             if (currentMediaPlayer != null && currentMediaPlayer.getMedia().getSource().equals(new File(songPath).toURI().toString())) {
                 currentMediaPlayer.play();
                 return;
             }
 
+            // Stop the previous song (if any) and remove the listener
             if (currentMediaPlayer != null) {
                 currentMediaPlayer.stop();
                 if (currentTimeListener != null) {
-                    currentMediaPlayer.currentTimeProperty().removeListener(currentTimeListener);
+                    currentMediaPlayer.currentTimeProperty().removeListener(currentTimeListener); // Remove old listener
                 }
             }
 
+            songCurrentTimer.setText("00:00");
+            songEndTimer.setText("00:00");
+            musicSlider.setValue(0);
+
+            // Create a new MediaPlayer for the new song
             Media media = new Media(new File(songPath).toURI().toString());
             currentMediaPlayer = new MediaPlayer(media);
 
-            currentMediaPlayer.setOnReady(() -> {
-                musicSlider.setMax(currentMediaPlayer.getMedia().getDuration().toSeconds());
-                musicSlider.setValue(0); // Reset slider to the start
-            });
-
+            // Attach the currentTimeProperty listener to update current time and slider
             currentTimeListener = (observable, oldValue, newValue) -> {
                 Platform.runLater(() -> {
+                    String formattedCurrentTime = formatDuration(newValue);
+                    songCurrentTimer.setText(formattedCurrentTime); // Update current time text
                     if (!musicSlider.isValueChanging()) {
-                        musicSlider.setValue(newValue.toSeconds());
+                        musicSlider.setValue(newValue.toSeconds()); // Update slider position
                     }
                 });
             };
-            currentMediaPlayer.currentTimeProperty().addListener(currentTimeListener);
+            currentMediaPlayer.currentTimeProperty().addListener(currentTimeListener); // Attach listener once
 
+            // Set up the song once it's ready to play
+            currentMediaPlayer.setOnReady(() -> {
+                Duration songDuration = currentMediaPlayer.getMedia().getDuration();
+                double songDurationInSeconds = songDuration.toSeconds();
+
+                musicSlider.setMax(songDurationInSeconds); // Set slider max value to the song's duration
+                musicSlider.setValue(0); // Reset slider to the start
+                songPlay.setText(song.getTitle()); // Set song title
+                artistName.setText(song.getArtist()); // Set artist name
+
+                String formattedEndTime = formatDuration(songDuration);
+                songEndTimer.setText(formattedEndTime);
+            });
+
+            // Handle the end of the song (next song or reset)
+            currentMediaPlayer.setOnEndOfMedia(() -> handleNextSong());
+
+            // Handle user interaction with the slider to seek to different times
             musicSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
                 if (musicSlider.isValueChanging() && currentMediaPlayer != null) {
                     Duration seekTime = Duration.seconds(newValue.doubleValue());
-                    currentMediaPlayer.seek(seekTime);
+                    currentMediaPlayer.seek(seekTime); // Seek to the new position
                 }
             });
 
-            currentMediaPlayer.setOnEndOfMedia(() -> handleNextSong());
+            // Stop the song and reset UI elements when the song stops
+            currentMediaPlayer.setOnStopped(() -> {
+                songCurrentTimer.setText("00:00"); // Reset current time text
+                songEndTimer.setText("00:00"); // Reset end time text
+                musicSlider.setValue(0); // Reset the slider
+            });
 
+            // Start playing the song
             currentMediaPlayer.play();
             System.out.println("Playing: " + song.getTitle());
+
         } catch (Exception e) {
             System.err.println("Error playing song: " + song.getTitle());
             e.printStackTrace();
@@ -274,6 +365,13 @@ public class Controller {
         if (currentSongIndex > 0) {
             currentSongIndex--;
             playSongAtIndex(currentSongIndex);
+
+            Sange selectedSong = sangeData.get(currentSongIndex);
+            if (selectedSong != null) {
+                songPlay.setText(selectedSong.getTitle());
+                artistName.setText(selectedSong.getArtist());
+            }
+
         } else {
             System.out.println("Der er ingen tidligere sang.");
         }
@@ -281,9 +379,16 @@ public class Controller {
 
     @FXML
     void handleForwardSange(ActionEvent event) {
-        if (currentSongIndex < songsList.size() - 1) {
+        if (currentSongIndex < sangeData.size() - 1) {
             currentSongIndex++;
             playSongAtIndex(currentSongIndex);
+
+            Sange selectedSong = sangeData.get(currentSongIndex);
+            if (selectedSong != null) {
+                songPlay.setText(selectedSong.getTitle());
+                artistName.setText(selectedSong.getArtist());
+            }
+
         } else {
             System.out.println("Der er ingen næste sang.");
         }
@@ -339,39 +444,9 @@ public class Controller {
     }
 
     private void playSongAtIndex(int index) {
-        if (index >= 0 && index < songsList.size()) {
-            Sange selectedSong = songsList.get(index);
-            String songPath = selectedSong.getFilePath(); // Antag, at Sange-klassen har en metode til at få filstien
-
-            try {
-                // Stop den nuværende sang, hvis en afspilles
-                if (currentMediaPlayer != null) {
-                    currentMediaPlayer.stop();
-                }
-
-                // Opret en ny MediaPlayer til den valgte sang
-                Media media = new Media(new File(songPath).toURI().toString());
-                currentMediaPlayer = new MediaPlayer(media);
-
-                currentMediaPlayer.setOnReady(() -> {
-                    musicSlider.setMax(currentMediaPlayer.getMedia().getDuration().toSeconds());
-                    musicSlider.setValue(0); // Reset the slider to the start
-                });
-
-                // Reattach the listener to update the slider position
-                currentTimeListener = (observable, oldValue, newValue) -> {
-                    if (!musicSlider.isValueChanging()) {
-                        musicSlider.setValue(newValue.toSeconds());
-                    }
-                };
-                currentMediaPlayer.currentTimeProperty().addListener(currentTimeListener);
-
-                currentMediaPlayer.play();
-                System.out.println("Afspiller: " + selectedSong.getTitle());
-            } catch (Exception e) {
-                System.err.println("Fejl under afspilning af sang: " + selectedSong.getTitle());
-                e.printStackTrace();
-            }
+        if (index >= 0 && index < sangeData.size()) {
+            Sange selectedSong = sangeData.get(index);
+            playSong(selectedSong); // Call the playSong method directly
         }
     }
 }
