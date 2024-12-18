@@ -51,20 +51,9 @@ public class Controller {
         });
 
         Playlist p = tablePlaylist.getSelectionModel().getSelectedItem();
-        if (p != null) {
-            Sange s = new Sange(sangNavnColumn.getText(), kunstnerColumn.getText());
-            p.tilknytSange(s);
-            sangeData.add(s);
-        }
-
-        sangNavnColumn.clear();
-        kunstnerColumn.clear();
-
-
-        
-        /*Sange s = songsTable.getSelectionModel().getSelectedItem();
-        Playlist p = tablePlaylist.getSelectionModel().getSelectedItem();
-        }*/
+        Sange s = songsTable.getSelectionModel().getSelectedItem();
+        p.tilknytSange(s);
+        sangeData.add(s);
     }
 
 
