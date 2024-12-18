@@ -125,16 +125,52 @@ public class Controller {
         // Initialize ObservableList and bind it to the TableView
         songsList = FXCollections.observableArrayList();
         songsTable.setItems(songsList);
+
+        sangePåPlaylist.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Sange selectedSong = sangePåPlaylist.getSelectionModel().getSelectedItem();
+                if (selectedSong != null) {
+                    playSong(selectedSong);
+                }
+            }
+        });
     }
 
     @FXML
     void handlePlayPause(ActionEvent event) {
-        if (currentMediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
-            currentMediaPlayer.pause();
+        Sange selectedSong = sangePåPlaylist.getSelectionModel().getSelectedItem();
+
+        if (selectedSong != null) {
+            if (currentMediaPlayer != null && currentMediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+                currentMediaPlayer.pause();
+            } else {
+                // Play the selected song
+                playSong(selectedSong);
+            }
         } else {
-            currentMediaPlayer.play();
+            System.out.println("No song selected in the playlist.");
         }
     }
+
+    private void playSong(Sange song) {
+        try {
+            String songPath = song.getFilePath();
+
+            if (currentMediaPlayer != null) {
+                currentMediaPlayer.stop();
+            }
+
+            Media media = new Media(new File(songPath).toURI().toString());
+            currentMediaPlayer = new MediaPlayer(media);
+
+            currentMediaPlayer.play();
+            System.out.println("Playing: " + song.getTitle());
+        } catch (Exception e) {
+            System.err.println("Error playing song: " + song.getTitle());
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     void handleBackwardsSange(ActionEvent event) {
         if (!songsList.isEmpty() && currentSongIndex > 0) {
