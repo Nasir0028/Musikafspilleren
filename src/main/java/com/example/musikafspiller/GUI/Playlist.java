@@ -6,8 +6,7 @@ import java.util.List;
 
 public class Playlist implements Serializable {
     private static final long serialVersionUID = 2L;
-
-    private int id;
+    
     private String navn;
     private List<Sange> sangliste = new ArrayList<Sange>();
 
