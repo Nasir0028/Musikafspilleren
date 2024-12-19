@@ -15,6 +15,10 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.*;
 import java.util.List;
@@ -79,7 +83,7 @@ public class Controller {
         Playlist p = tablePlaylist.getSelectionModel().getSelectedItem();
         Sange s = songsTable.getSelectionModel().getSelectedItem();
         p.tilknytSange(s);
-        sangeData.add(s);
+            sangeData.add(s);
     }
 
     @FXML
@@ -205,6 +209,14 @@ public class Controller {
         }
 
         setupMediaPlayerListeners();
+
+        tablePlaylist.getSelectionModel().selectedItemProperty().addListener((obs, oldPlaylist, newPlaylist) -> {
+            if (newPlaylist != null) {
+                sangeData.setAll(newPlaylist.getSangliste());
+            } else {
+                sangeData.clear();
+            }
+        });
     }
 
     private void setupMediaPlayerListeners() {
@@ -240,6 +252,131 @@ public class Controller {
         });
     }
 
+    /*public void saveState() {
+        try (FileWriter fileWriter = new FileWriter("app_state.json")) {
+            JSONObject state = new JSONObject();
+
+            JSONArray playlistArray = new JSONArray();
+            for (Playlist playlist : playList) {
+                JSONObject playlistObject = new JSONObject();
+                playlistObject.put("name", playlist.getNavn());
+
+                JSONArray songsArray = new JSONArray();
+                for (Sange song : playlist.getSangliste()) {
+                    JSONObject songObject = new JSONObject();
+                    songObject.put("title", song.getTitle());
+                    songObject.put("artist", song.getArtist());
+                    songObject.put("time", song.getTime());
+                    songObject.put("filePath", song.getFilePath());
+                    songsArray.put(songObject);
+                }
+                playlistObject.put("songs", songsArray);
+                playlistArray.put(playlistObject);
+            }
+            state.put("playlists", playlistArray);
+
+            JSONArray songsArray = new JSONArray();
+            for (Sange song : songsList) {
+                JSONObject songObject = new JSONObject();
+                songObject.put("title", song.getTitle());
+                songObject.put("artist", song.getArtist());
+                songObject.put("time", song.getTime());
+                songObject.put("filePath", song.getFilePath());
+                songsArray.put(songObject);
+            }
+            state.put("allSongs", songsArray);
+
+            if (currentSongIndex != -1 && currentSongIndex < sangeData.size()) {
+                Sange currentSong = sangeData.get(currentSongIndex);
+                state.put("currentSong", currentSong.getFilePath());
+                if (currentMediaPlayer != null) {
+                    state.put("playbackPosition", currentMediaPlayer.getCurrentTime().toSeconds());
+                }
+            }
+
+            state.put("volume", soundDrag.getValue());
+
+            fileWriter.write(state.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadState() {
+        File stateFile = new File("app_state.json");
+        if (!stateFile.exists()) return;
+
+        try (FileReader fileReader = new FileReader(stateFile)) {
+            JSONTokener tokener = new JSONTokener(fileReader);
+            JSONObject state = new JSONObject(tokener);
+
+            JSONArray playlistArray = state.getJSONArray("playlists");
+            for (int i = 0; i < playlistArray.length(); i++) {
+                JSONObject playlistObject = playlistArray.getJSONObject(i);
+                Playlist playlist = new Playlist(playlistObject.getString("name"));
+
+                JSONArray songsArray = playlistObject.getJSONArray("songs");
+                for (int j = 0; j < songsArray.length(); j++) {
+                    JSONObject songObject = songsArray.getJSONObject(j);
+                    Sange song = new Sange(
+                            songObject.getString("artist"),
+                            songObject.getInt("time"),
+                            songObject.getString("title"),
+                            songObject.getString("filePath")
+                    );
+                    playlist.tilknytSange(song);
+                }
+                playList.add(playlist);
+            }
+            tablePlaylist.setItems(playList);
+
+            JSONArray songsArray = state.getJSONArray("allSongs");
+            songsList.clear();
+            for (int i = 0; i < songsArray.length(); i++) {
+                JSONObject songObject = songsArray.getJSONObject(i);
+                Sange song = new Sange(
+                        songObject.getString("artist"),
+                        songObject.getInt("time"),
+                        songObject.getString("title"),
+                        songObject.getString("filePath")
+                );
+                songsList.add(song);
+            }
+
+            if (state.has("currentSong")) {
+                String currentSongPath = state.getString("currentSong");
+                for (Sange song : songsList) {
+                    if (song.getFilePath().equals(currentSongPath)) {
+                        playSong(song);
+                        currentMediaPlayer.pause();
+                        if (state.has("playbackPosition")) {
+                            currentMediaPlayer.seek(Duration.seconds(state.getDouble("playbackPosition")));
+                        }
+                        break;
+                    }
+                }
+            }
+
+            if (state.has("volume")) {
+                soundDrag.setValue(state.getDouble("volume"));
+                if (currentMediaPlayer != null) {
+                    currentMediaPlayer.setVolume(state.getDouble("volume") / 100);
+                }
+            }
+
+            tablePlaylist.getSelectionModel().selectedItemProperty().addListener((obs, oldPlaylist, newPlaylist) -> {
+                if (newPlaylist != null) {
+                    sangeData.setAll(newPlaylist.getSangliste());
+                } else {
+                    sangeData.clear();
+                }
+            });
+
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+    }*/
+
     @FXML
     void handleMute(ActionEvent event) {
         if (currentMediaPlayer != null) {
@@ -251,6 +388,8 @@ public class Controller {
         }
         else {
             System.out.println("Ingen sang er loaded.");
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Ingen sang er loaded.");
+            alert.show();
         }
     }
 
@@ -266,6 +405,8 @@ public class Controller {
             }
         } else {
             System.out.println("Ingen sang valgt på playlisten.");
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Ingen sang valgt på playlisten.");
+            alert.show();
         }
     }
 
@@ -279,6 +420,8 @@ public class Controller {
                 playSongAtIndex(currentSongIndex);
             } else {
                 System.out.println("Playlisten er slut.");
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Playlisten er slut.");
+                alert.show();
             }
         }
     }
@@ -291,36 +434,35 @@ public class Controller {
             System.out.println("Playlist shuffled.");
         } else {
             System.out.println("Ikke nok sange til at shuffle.");
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Ikke nok sange til at shuffle.");
+            alert.show();
         }
     }
 
     @FXML
     void handleRepeatPlaylist(ActionEvent event) {
-        // Toggle the repeat mode
         switch (currentRepeatMode) {
             case NONE:
-                currentRepeatMode = RepeatMode.SINGLE_SONG;  // Set to repeat the current song
+                currentRepeatMode = RepeatMode.SINGLE_SONG;
                 System.out.println("Repeat mode: Single Song");
                 break;
 
             case SINGLE_SONG:
-                currentRepeatMode = RepeatMode.PLAYLIST;  // Set to repeat the playlist
+                currentRepeatMode = RepeatMode.PLAYLIST;
                 System.out.println("Repeat mode: Playlist");
                 break;
 
             case PLAYLIST:
-                currentRepeatMode = RepeatMode.NONE;  // Disable repeat
+                currentRepeatMode = RepeatMode.NONE;
                 System.out.println("Repeat mode: None");
                 break;
         }
-
-        updateRepeatBehavior(); // Update behavior based on the current repeat mode
+        updateRepeatBehavior();
     }
 
     private void updateRepeatBehavior() {
         if (currentRepeatMode == RepeatMode.SINGLE_SONG) {
             if (currentMediaPlayer != null) {
-                // Repeat the current song
                 currentMediaPlayer.setOnEndOfMedia(() -> {
                     currentMediaPlayer.seek(Duration.ZERO);
                     currentMediaPlayer.play();
@@ -329,20 +471,18 @@ public class Controller {
             }
         } else if (currentRepeatMode == RepeatMode.PLAYLIST) {
             if (currentMediaPlayer != null) {
-                // Repeat the entire playlist
                 currentMediaPlayer.setOnEndOfMedia(() -> {
                     if (currentSongIndex >= sangeData.size() - 1) {
-                        currentSongIndex = 0; // Go back to the first song
+                        currentSongIndex = 0;
                     } else {
-                        currentSongIndex++; // Go to the next song
+                        currentSongIndex++;
                     }
-                    playSongAtIndex(currentSongIndex); // Play the next song
+                    playSongAtIndex(currentSongIndex);
                     System.out.println("Repeating playlist.");
                 });
             }
         } else {
             if (currentMediaPlayer != null) {
-                // No repeat
                 currentMediaPlayer.setOnEndOfMedia(() -> {
                     System.out.println("Playlist finished, no repeat.");
                 });
@@ -438,6 +578,8 @@ public class Controller {
 
         } else {
             System.out.println("Der er ingen tidligere sang.");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Der er ingen tidligere sang.");
+            alert.show();
         }
     }
 
@@ -455,6 +597,8 @@ public class Controller {
 
         } else {
             System.out.println("Der er ingen næste sang.");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Der er ingen næste sang.");
+            alert.show();
         }
     }
 
