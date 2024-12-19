@@ -22,12 +22,12 @@ import java.util.List;
 public class Controller {
 
     private enum RepeatMode {
-        NONE,          // No repeat
-        SINGLE_SONG,   // Repeat the current song
-        PLAYLIST       // Repeat the entire playlist
+        NONE,
+        SINGLE_SONG,
+        PLAYLIST
     }
 
-    private RepeatMode currentRepeatMode = RepeatMode.NONE; // Start with no repeat
+    private RepeatMode currentRepeatMode = RepeatMode.NONE;
 
     @FXML
     private Text artistName;
