@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Playlist implements Serializable {
     private static final long serialVersionUID = 2L;
-    
+
     private String navn;
     private List<Sange> sangliste = new ArrayList<Sange>();
 
@@ -30,6 +30,6 @@ public class Playlist implements Serializable {
     public String toString() {
         String al = "";
         for (Sange s : sangliste) al += " "+s;
-        return id+" "+navn+" "+ al;
+        return navn+" "+ al;
     }
 }
